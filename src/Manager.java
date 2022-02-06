@@ -1,43 +1,57 @@
-import com.sun.source.tree.NewArrayTree;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
 
     private int keyTask = 0;
 
-    HashMap<Integer, Epic> newEpic = new HashMap<>();
+
     HashMap<Integer, Task> newTask = new HashMap<>();
+    HashMap<Integer, Epic> newEpic = new HashMap<>();
     HashMap<Integer, SubTask> subTask = new HashMap<>();
 
-    public void newEpic(Epic object) {
-        newEpic.put(++keyTask, object);
+    public int getId() {
+        ++keyTask;
+        return keyTask;
     }
 
     public void newTask(Task object) {
-        newTask.put(++keyTask, object);
-        statusCheckEpic(object.getKeyEpic());
+        int idTask = getId();
+        newTask.put(idTask, object);
+        object.setId(idTask);
+    }
+
+    public void newEpic(Epic object) {
+        int idEpic = getId();
+        newEpic.put(idEpic, object);
+        object.setId(idEpic);
     }
 
     public void newSubTask(SubTask object) {
-        subTask.put(++keyTask, object);
-        if (newTask.get(object.getKeyTask()) != null) {
-            statusCheckEpic(newTask.get(object.getKeyTask()).getKeyEpic());
-        }
+        int idSubTask = getId();
+        subTask.put(idSubTask, object);
+        statusCheckEpic(object.getKey());
+        object.setId(idSubTask);
     }
 
-    public void listAllTasks() {
-        for (Integer o : newEpic.keySet()) {
-            System.out.println("Идентификатор: " + o + " " + newEpic.get(o));
-        }
+    public ArrayList<Task> listAllTasks() {
+        ArrayList<Task> allTasks = new ArrayList<>();
         for (Integer o : newTask.keySet()) {
-            System.out.println("Идентификатор: " + o + " " + newTask.get(o));
+            allTasks.add(newTask.get(o));
+        }
+
+        for (Integer o : newEpic.keySet()) {
+            allTasks.add(newEpic.get(o));
         }
 
         for (Integer o : subTask.keySet()) {
-            System.out.println("Идентификатор: " + o + " " + subTask.get(o));
+            allTasks.add(subTask.get(o));
         }
-
+        return allTasks;
     }
 
     public void deleteAllTasks() {
@@ -47,28 +61,39 @@ public class Manager {
         System.out.println("Все задачи удалены.");
     }
 
-    public void foundTask(int keyTask) {
-        for (Integer o : newEpic.keySet()) {
-            if (keyTask == o) {
-                System.out.println("По заданному номеру " + keyTask + " найден эпик: " + newEpic.get(o));
-            }
-        }
+    public Task getTask(int keyTask) {
+        Task resultFound = null;
         for (Integer o : newTask.keySet()) {
             if (keyTask == o) {
-                System.out.println("По заданному номеру " + keyTask + " найдена задача: " + newEpic.get(o));
+                resultFound = newTask.get(o);
             }
         }
-
-        for (Integer o : subTask.keySet()) {
-            if (keyTask == o) {
-                System.out.println("По заданному номеру " + keyTask + " найдена подзадача: " + subTask.get(o));
-            }
-        }
+        return resultFound;
     }
 
-    public void deleteEpic(int keyTask) {
-        newEpic.remove(keyTask);
-        System.out.println("Задача № " + keyTask + "удалена.");
+    public Task getEpic(int keyEpic) {
+        Task resultFound = null;
+        for (Integer o : newEpic.keySet()) {
+            if (keyEpic == o) {
+                resultFound = newEpic.get(o);
+            }
+        }
+        return resultFound;
+    }
+
+    public Task getSubTask(int keySubTask) {
+        Task resultFound = null;
+        for (Integer o : subTask.keySet()) {
+            if (keySubTask == o) {
+                resultFound = subTask.get(o);
+            }
+        }
+        return resultFound;
+    }
+
+    public void deleteEpic(int keyEpic) {
+        newEpic.remove(keyEpic);
+        System.out.println("Задача № " + keyEpic + "удалена.");
     }
 
     public void deleteTask(int keyTask) {
@@ -76,38 +101,39 @@ public class Manager {
         System.out.println("Задача № " + keyTask + "удалена.");
     }
 
-    public void deleteSubTask(int keyTask) {
-        subTask.remove(keyTask);
-        System.out.println("Задача № " + keyTask + "удалена.");
+    public void deleteSubTask(int keySubTask) {
+        subTask.remove(keySubTask);
+        statusCheckEpic(subTask.get(keySubTask).getKey());
+        System.out.println("Задача № " + keySubTask + "удалена.");
     }
 
-    public void updateEpic(Epic object, int keyTask) {
-        if (newEpic.containsKey(keyTask)) {
-            newEpic.put(keyTask, object);
+    public void updateEpic(Epic object, int keyEpic) {
+        if (newEpic.containsKey(keyEpic)) {
+            newEpic.put(keyEpic, object);
         }
     }
 
-    public void updateTask(Task object, int keyTask) {
+    public void updateTask(Epic object, int keyTask) {
         if (newTask.containsKey(keyTask)) {
             newTask.put(keyTask, object);
-            statusCheckEpic(object.getKeyEpic());
+
         }
     }
 
-    public void updateSubTask(SubTask object, int keyTask) {
-        if (subTask.containsKey(keyTask)) {
-            subTask.put(keyTask, object);
-            statusCheckEpic(newTask.get(object.getKeyTask()).getKeyEpic());
+    public void updateSubTask(SubTask object, int keyEpic) {
+        if (subTask.containsKey(keyEpic)) {
+            subTask.put(keyEpic, object);
+            statusCheckEpic(keyEpic);
         }
     }
 
     public void listTasks(int keyTask) {
-        for (Integer j : newTask.keySet()) {
-            newTask.get(j);
-            if (keyTask == newTask.get(j).getKeyEpic()) {
-                System.out.println(newTask.get(j));
+        for (Integer j : newEpic.keySet()) {
+            newEpic.get(j);
+            if (keyTask == subTask.get(j).getKey()) {
+                System.out.println(newEpic.get(j));
                 for (SubTask k : subTask.values()) {
-                    if (j == k.getKeyTask()) {
+                    if (j == k.getKey()) {
                         System.out.println(k);
                     }
                 }
@@ -115,41 +141,43 @@ public class Manager {
         }
     }
 
-    public void statusCheckEpic(int keyTask) {
-        boolean taskNew = true;
-        boolean taskDone = true;
-        boolean taskOut = false;
+    public void statusCheckEpic(int keyEpic) {
+        boolean containsNewTasks = true;
+        boolean containsDoneTasks = true;
 
-        for (Integer j : newTask.keySet()) {
-            if (keyTask == newTask.get(j).getKeyEpic()) {
-                taskOut = true;
-                if (!newTask.get(j).getStatusTask().equals("NEW")) {
-                    taskNew = false;
-                }
-                if (!newTask.get(j).getStatusTask().equals("DONE")) {
-                    taskDone = false;
-                }
-                for (SubTask k : subTask.values()) {
-                    if (j == k.getKeyTask()) {
-                        if (!k.getStatusSubTask().equals("NEW")) {
-                            taskNew = false;
-                        }
-                        if (!k.getStatusSubTask().equals("DONE")) {
-                            taskDone = false;
-                        }
-                    }
-                }
+        ArrayList<Task> listEpic = getEpicSubtasks(keyEpic);
+
+        for (Task o : listEpic) {
+
+            if (!o.getStatus().equals("NEW")) {
+                containsNewTasks = false;
+            }
+            if (!o.getStatus().equals("DONE")) {
+                containsDoneTasks = false;
+            }
+
+        }
+        newEpic.get(keyEpic).setStatus("NEW");
+
+        if (containsNewTasks || listEpic.isEmpty()) {
+            newEpic.get(keyEpic).setStatus("NEW");
+            return;
+        }
+        if (containsDoneTasks) {
+            newEpic.get(keyEpic).setStatus("DONE");
+            return;
+        }
+        newEpic.get(keyEpic).setStatus("IN PROGRESS");
+
+    }
+
+    public ArrayList<Task> getEpicSubtasks(int keyEpic) {
+        ArrayList<Task> epicSubTask = new ArrayList<>();
+        for (Integer j : subTask.keySet()) {
+            if (keyEpic == subTask.get(j).getKey()) {
+                epicSubTask.add(subTask.get(j));
             }
         }
-
-        if (taskNew || !taskOut) {
-            newEpic.get(keyTask).setStatus("NEW");
-            return;
-        }
-        if (taskDone) {
-            newEpic.get(keyTask).setStatus("DONE");
-            return;
-        }
-        newEpic.get(keyTask).setStatus("IN PROGRESS");
+        return epicSubTask;
     }
 }

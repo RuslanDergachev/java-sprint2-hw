@@ -1,28 +1,34 @@
+package tasks;
 
-
-public class Epic{
+public class Task {
+    int idTask = 0;
     String name;
     String description;
     String status;
 
-    public Epic(String name, String descriptionTask, String status){
+    public Task(String name, String descriptionTask, String status) {
 
         this.name = name;
         this.status = status;
         this.description = descriptionTask;
-        }
+    }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setId(int id) {
+        idTask = id;
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "Task{" +
+                "id:" + idTask + '\'' +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 '}';
+    }
+
+    public String getStatus() {
+        return status;
     }
 
 }

@@ -1,33 +1,28 @@
+package tasks;
 
-public class Task extends Epic {
+public class SubTask extends Task {
 
     int keyEpic;
 
-    public Task(String name, String descriptionTask, String newStatusTask, int keyEpic) {
+
+    public SubTask(String name, String descriptionTask, String newStatusTask, int keyEpic) {
         super(name, descriptionTask, newStatusTask);
         this.keyEpic = keyEpic;
+
     }
 
-    public String getStatusTask(){
-
-        return status;
-    }
-
-    public int getKeyEpic() {
-        return keyEpic;
-    }
     @Override
     public String toString() {
-        return "Task{" +
+        return "tasks.SubTask{" +
+                "id:" + idTask + '\'' +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 ", keyEpic='" + keyEpic + '\'' +
                 '}';
     }
+
+    public int getKey() {
+        return keyEpic;
+    }
 }
-
-
-
-
-
