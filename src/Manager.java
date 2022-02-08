@@ -4,6 +4,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Manager {
 
@@ -15,8 +16,7 @@ public class Manager {
     HashMap<Integer, SubTask> subTask = new HashMap<>();
 
     public int getId() {
-        ++keyTask;
-        return keyTask;
+        return ++keyTask;
     }
 
     public void newTask(Task object) {
@@ -38,19 +38,11 @@ public class Manager {
         object.setId(idSubTask);
     }
 
-    public ArrayList<Task> listAllTasks() {
-        ArrayList<Task> allTasks = new ArrayList<>();
-        for (Integer o : newTask.keySet()) {
-            allTasks.add(newTask.get(o));
-        }
+    public List<Task> listAllTasks() {
+        List<Task> allTasks = new ArrayList<>(newTask.values());
+        allTasks.addAll(newEpic.values());
+        allTasks.addAll(subTask.values());
 
-        for (Integer o : newEpic.keySet()) {
-            allTasks.add(newEpic.get(o));
-        }
-
-        for (Integer o : subTask.keySet()) {
-            allTasks.add(subTask.get(o));
-        }
         return allTasks;
     }
 
@@ -144,8 +136,9 @@ public class Manager {
     public void statusCheckEpic(int keyEpic) {
         boolean containsNewTasks = true;
         boolean containsDoneTasks = true;
+        Epic objectKeyEpic = newEpic.get(keyEpic);
 
-        ArrayList<Task> listEpic = getEpicSubtasks(keyEpic);
+        ArrayList<SubTask> listEpic = getEpicSubtasks(keyEpic);
 
         for (Task o : listEpic) {
 
@@ -155,24 +148,22 @@ public class Manager {
             if (!o.getStatus().equals("DONE")) {
                 containsDoneTasks = false;
             }
-
         }
-        newEpic.get(keyEpic).setStatus("NEW");
 
         if (containsNewTasks || listEpic.isEmpty()) {
-            newEpic.get(keyEpic).setStatus("NEW");
+            objectKeyEpic.setStatus("NEW");
             return;
         }
         if (containsDoneTasks) {
-            newEpic.get(keyEpic).setStatus("DONE");
+            objectKeyEpic.setStatus("DONE");
             return;
         }
-        newEpic.get(keyEpic).setStatus("IN PROGRESS");
+        objectKeyEpic.setStatus("IN PROGRESS");
 
     }
 
-    public ArrayList<Task> getEpicSubtasks(int keyEpic) {
-        ArrayList<Task> epicSubTask = new ArrayList<>();
+    public ArrayList<SubTask> getEpicSubtasks(int keyEpic) {
+        ArrayList<SubTask> epicSubTask = new ArrayList<>();
         for (Integer j : subTask.keySet()) {
             if (keyEpic == subTask.get(j).getKey()) {
                 epicSubTask.add(subTask.get(j));
