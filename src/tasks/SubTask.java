@@ -1,11 +1,13 @@
 package tasks;
 
+import managerTasks.StatusTask;
+
 public class SubTask extends Task {
 
     int keyEpic;
 
 
-    public SubTask(String name, String descriptionTask, String newStatusTask, int keyEpic) {
+    public SubTask(String name, String descriptionTask, StatusTask newStatusTask, int keyEpic) {
         super(name, descriptionTask, newStatusTask);
         this.keyEpic = keyEpic;
 

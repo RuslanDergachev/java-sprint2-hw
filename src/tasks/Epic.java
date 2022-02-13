@@ -1,14 +1,16 @@
 package tasks;
 
+import managerTasks.StatusTask;
+
 public class Epic extends Task{
 
 
 
-    public Epic(String name, String descriptionTask, String newStatusTask) {
+    public Epic(String name, String descriptionTask, StatusTask newStatusTask) {
         super(name, descriptionTask, newStatusTask);
 
     }
-    public void setStatus(String status){
+    public void setStatus(StatusTask status){
         this.status = status;
     }
     @Override
