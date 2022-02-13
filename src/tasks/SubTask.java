@@ -4,7 +4,7 @@ import managerTasks.StatusTask;
 
 public class SubTask extends Task {
 
-    int keyEpic;
+    protected int keyEpic;
 
 
     public SubTask(String name, String descriptionTask, StatusTask newStatusTask, int keyEpic) {

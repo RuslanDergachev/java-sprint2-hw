@@ -7,65 +7,54 @@ import tasks.Task;
 public class Main {
     public static void main(String[] args) {
 
-        Manager manager = Managers.getDefault();
-        HistoryManager historyManager = Managers.getDefaultHistory();
+        TaskManager taskManager = Managers.getDefault();
 
         Task taskTask = new Task("Пойти гулять", "Сегодня хорошая погода", StatusTask.NEW);
-        manager.newTask(taskTask);
+        taskManager.newTask(taskTask);
 
         Task taskTask6 = new Task("Пойти гулять", "Сегодня хорошая погода", StatusTask.NEW);
-        manager.newTask(taskTask6);
+        taskManager.newTask(taskTask6);
 
         Epic taskEpic7 = new Epic("Пойти побегать", "Стадион рядом", StatusTask.NEW);
-        manager.newEpic(taskEpic7);
+        taskManager.newEpic(taskEpic7);
 
         Epic taskEpic5 = new Epic("Одеть шапку", "шапка должна быть весенней",
                 StatusTask.NEW);
-        manager.newEpic(taskEpic5);
+        taskManager.newEpic(taskEpic5);
 
         Epic taskEpic8 = new Epic("Достать лыжи", "И санки тоже",
                 StatusTask.IN_PROGRESS);
-        manager.newEpic(taskEpic8);
+        taskManager.newEpic(taskEpic8);
 
         Task taskTask2 = new Task("Одеть кроссовки", "дистанция 3 км",
                 StatusTask.IN_PROGRESS);
-        manager.newTask(taskTask2);
+        taskManager.newTask(taskTask2);
 
         Task taskTask3 = new Task("Взять кота", "кот Мурзик",
                 StatusTask.NEW);
-        manager.newTask(taskTask3);
+        taskManager.newTask(taskTask3);
 
         SubTask taskSubTask = new SubTask("Взять сумку", "Сумку взять маленькую",
                 StatusTask.DONE, 3);
-        manager.newSubTask(taskSubTask);
+        taskManager.newSubTask(taskSubTask);
 
         SubTask taskSubTask2 = new SubTask("Взять перчатки", "Одеть шарфик",
                 StatusTask.IN_PROGRESS, 5);
-        manager.newSubTask(taskSubTask2);
+        taskManager.newSubTask(taskSubTask2);
 
+        System.out.println(taskManager.listAllTasks());
+        System.out.println(taskManager.getSubTask(8));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(2));
+        System.out.println(taskManager.getTask(1));
 
-        //manager.deleteAllTasks();
-        //manager.deleteTask(1);
-        //manager.foundTask(3);
-        //tasks.Epic taskEpic3 = new tasks.Epic("Остаться дома", "Надо отдохнуть", "IN PROGRESS");
-        //manager.updateEpic(taskEpic3, 3);
-        //manager.updateTask();
-        //manager.updateSubTask();
-
-        //manager.listTasks(1);
-        System.out.println(manager.listAllTasks());
-        System.out.println(manager.getSubTask(8));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(2));
-        System.out.println(manager.getTask(1));
-
-        System.out.println(historyManager.getHistory());
+        System.out.println(taskManager.getHistory());
     }
 }

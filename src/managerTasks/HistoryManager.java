@@ -4,11 +4,11 @@ import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
-public interface HistoryManager {
+interface HistoryManager {
 
-    public void add(Task task);
+    void add(Task task);
 
-    public List<Task> getHistory();
+    List<Task> getHistory();
 
 }
 

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryTaskManager implements Manager {
+public class InMemoryTaskManager implements TaskManager {
 
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     private int keyTask = 0;
 
@@ -193,6 +193,11 @@ public class InMemoryTaskManager implements Manager {
             }
         }
         return epicSubTask;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 }
 

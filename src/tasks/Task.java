@@ -2,8 +2,8 @@ package tasks;
 import managerTasks.StatusTask;
 public class Task {
     int idTask = 0;
-    String name;
-    String description;
+    protected String name;
+    protected String description;
     protected StatusTask status;
 
     public Task(String name, String descriptionTask, StatusTask status) {
