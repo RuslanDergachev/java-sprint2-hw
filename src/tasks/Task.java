@@ -21,6 +21,11 @@ public class Task {
         idTask = id;
     }
 
+    public int getIdTask(){
+        return idTask;
+    }
+
+
     @Override
     public String toString() {
         return "Task{" +

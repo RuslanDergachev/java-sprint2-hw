@@ -47,4 +47,5 @@ interface TaskManager {
     ArrayList<SubTask> getEpicSubtasks(int keyEpic);
 
     List<Task> getHistory();
+
 }

@@ -39,22 +39,27 @@ public class Main {
         taskManager.newSubTask(taskSubTask);
 
         SubTask taskSubTask2 = new SubTask("Взять перчатки", "Одеть шарфик",
-                StatusTask.IN_PROGRESS, 5);
+                StatusTask.IN_PROGRESS, 3);
         taskManager.newSubTask(taskSubTask2);
 
         System.out.println(taskManager.listAllTasks());
-        System.out.println(taskManager.getSubTask(8));
+
+        System.out.println("Проверка"+ taskManager.getSubTask(8));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
+        taskManager.deleteEpic(3);
+        System.out.println(taskManager.getEpic(3));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(2));
         System.out.println(taskManager.getTask(1));
+        System.out.println(taskManager.getEpic(3));
 
-        System.out.println(taskManager.getHistory());
+
+        System.out.println("Проверка истории: " +taskManager.getHistory());
     }
 }

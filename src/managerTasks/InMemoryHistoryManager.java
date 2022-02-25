@@ -2,26 +2,26 @@ package managerTasks;
 
 import tasks.Task;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private LinkedList<Task> historyViewTasks = new LinkedList<>();
+    HistoryList<Task> historyList = new HistoryList<>();
 
     @Override
-    public void add(Task task){
-        setHistoryViewSize();
-        historyViewTasks.addLast(task);
+    public void add(Task task) {
+        historyList.addLast(task);
     }
 
-    private void setHistoryViewSize() {
-        if (historyViewTasks.size() > 9) {
-            historyViewTasks.removeFirst();
-        }
+    @Override
+    public void remove(int id) {
+        historyList.remove(id);
     }
+
     @Override
     public List<Task> getHistory() {
-        return historyViewTasks;
+        return historyList.getTasks();
     }
+
+
 }
