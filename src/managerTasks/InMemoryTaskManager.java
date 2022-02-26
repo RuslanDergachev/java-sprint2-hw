@@ -199,4 +199,9 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
+
+    @Override
+    public void remove(int id){
+        historyManager.remove(id);
+    }
 }

@@ -1,10 +1,5 @@
 package managerTasks;
 
-import tasks.Task;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class Node <T> {
     private T data;
     private Node<T> next;

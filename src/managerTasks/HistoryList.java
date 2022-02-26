@@ -10,7 +10,7 @@ public class HistoryList<T extends Task> {
 
     private Node<T> head;
     private Node<T> tail;
-    Map<Integer, Node<T>> historyView = new HashMap<>();
+    private Map<Integer, Node<T>> historyView = new HashMap<>();
 
     public void addLast(T element) {
         int id = element.getIdTask();
