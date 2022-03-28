@@ -1,6 +1,7 @@
 package tasks;
 
 import managerTasks.StatusTask;
+import managerTasks.TypeTask;
 
 public class SubTask extends Task {
 
@@ -26,5 +27,16 @@ public class SubTask extends Task {
 
     public int getKey() {
         return keyEpic;
+    }
+
+    @Override
+    public TypeTask getType() {
+        return TypeTask.SUBTASK;
+    }
+
+    @Override
+    public String toCSV() {
+        return getIdTask() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + ","
+                + getKey();
     }
 }

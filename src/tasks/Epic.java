@@ -1,6 +1,7 @@
 package tasks;
 
 import managerTasks.StatusTask;
+import managerTasks.TypeTask;
 
 public class Epic extends Task{
 
@@ -21,6 +22,21 @@ public class Epic extends Task{
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
                 '}';
+    }
+
+    @Override
+    public TypeTask getType(){
+        return TypeTask.EPIC;
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    public String toCSV(){
+        return getIdTask() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription();
     }
 }
 

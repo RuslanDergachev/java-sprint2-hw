@@ -10,9 +10,13 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private int keyTask = 0;
+    public void setKeyTask(int keyTask) {
+        this.keyTask = keyTask;
+    }
+
+    protected int keyTask = 0;
 
     HashMap<Integer, Task> newTask = new HashMap<>();
     HashMap<Integer, Epic> newEpic = new HashMap<>();

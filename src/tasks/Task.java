@@ -1,5 +1,7 @@
 package tasks;
 import managerTasks.StatusTask;
+import managerTasks.TypeTask;
+
 public class Task {
     int idTask = 0;
     protected String name;
@@ -11,10 +13,6 @@ public class Task {
         this.name = name;
         this.status = status;
         this.description = descriptionTask;
-    }
-
-    public StatusTask getStatusTask() {
-        return status;
     }
 
     public void setId(int id) {
@@ -38,6 +36,22 @@ public class Task {
 
     public StatusTask getStatus() {
         return status;
+    }
+
+    public TypeTask getType(){
+        return TypeTask.TASK;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String toCSV(){
+    return getIdTask() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription();
     }
 
 }
