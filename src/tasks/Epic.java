@@ -3,21 +3,24 @@ package tasks;
 import managerTasks.StatusTask;
 import managerTasks.TypeTask;
 
-public class Epic extends Task{
-
-
+public class Epic extends Task {
 
     public Epic(String name, String descriptionTask, StatusTask newStatusTask) {
         super(name, descriptionTask, newStatusTask);
-
     }
-    public void setStatus(StatusTask status){
+
+    public Epic(int taskId, String name, String description, StatusTask status) {
+        super(taskId, name, description, status);
+    }
+
+    public void setStatus(StatusTask status) {
         this.status = status;
     }
+
     @Override
     public String toString() {
         return "tasks.Epic{" +
-                "id:" + idTask + '\'' +
+                "id:" + taskId + '\'' +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
@@ -25,18 +28,13 @@ public class Epic extends Task{
     }
 
     @Override
-    public TypeTask getType(){
+    public TypeTask getType() {
         return TypeTask.EPIC;
     }
 
     @Override
     public String getName() {
         return super.getName();
-    }
-
-    @Override
-    public String toCSV(){
-        return getIdTask() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription();
     }
 }
 

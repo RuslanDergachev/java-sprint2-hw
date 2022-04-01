@@ -18,9 +18,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int keyTask = 0;
 
-    HashMap<Integer, Task> newTask = new HashMap<>();
-    HashMap<Integer, Epic> newEpic = new HashMap<>();
-    HashMap<Integer, SubTask> subTask = new HashMap<>();
+    HashMap<Integer, Task> taskMap = new HashMap<>();
+    HashMap<Integer, Epic> epicMap = new HashMap<>();
+    HashMap<Integer, SubTask> subTaskMap = new HashMap<>();
 
     @Override
     public int getId() {
@@ -30,48 +30,47 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void newTask(Task object) {
         int idTask = getId();
-        newTask.put(idTask, object);
+        taskMap.put(idTask, object);
         object.setId(idTask);
     }
 
     @Override
     public void newEpic(Epic object) {
         int idEpic = getId();
-        newEpic.put(idEpic, object);
+        epicMap.put(idEpic, object);
         object.setId(idEpic);
     }
 
     @Override
     public void newSubTask(SubTask object) {
         int idSubTask = getId();
-        subTask.put(idSubTask, object);
+        subTaskMap.put(idSubTask, object);
         statusCheckEpic(object.getKey());
         object.setId(idSubTask);
     }
 
     @Override
     public List<Task> listAllTasks() {
-        List<Task> allTasks = new ArrayList<>(newTask.values());
-        allTasks.addAll(newEpic.values());
-        allTasks.addAll(subTask.values());
-
+        List<Task> allTasks = new ArrayList<>(taskMap.values());
+        allTasks.addAll(epicMap.values());
+        allTasks.addAll(subTaskMap.values());
         return allTasks;
     }
 
     @Override
     public void deleteAllTasks() {
-        newEpic.clear();
-        newTask.clear();
-        subTask.clear();
+        epicMap.clear();
+        taskMap.clear();
+        subTaskMap.clear();
         System.out.println("Все задачи удалены.");
     }
 
     @Override
     public Task getTask(int keyTask) {
         Task resultFound = null;
-        for (Integer o : newTask.keySet()) {
+        for (Integer o : taskMap.keySet()) {
             if (keyTask == o) {
-                resultFound = newTask.get(o);
+                resultFound = taskMap.get(o);
                 historyManager.add(resultFound);
             }
         }
@@ -81,9 +80,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getEpic(int keyEpic) {
         Task resultFound = null;
-        for (Integer o : newEpic.keySet()) {
+        for (Integer o : epicMap.keySet()) {
             if (keyEpic == o) {
-                resultFound = newEpic.get(o);
+                resultFound = epicMap.get(o);
                 historyManager.add(resultFound);
             }
         }
@@ -93,9 +92,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getSubTask(int keySubTask) {
         Task resultFound = null;
-        for (Integer o : subTask.keySet()) {
+        for (Integer o : subTaskMap.keySet()) {
             if (keySubTask == o) {
-                resultFound = subTask.get(o);
+                resultFound = subTaskMap.get(o);
                 historyManager.add(resultFound);
             }
         }
@@ -104,53 +103,53 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int keyEpic) {
-        newEpic.remove(keyEpic);
+        epicMap.remove(keyEpic);
         System.out.println("Задача № " + keyEpic + "удалена.");
     }
 
     @Override
     public void deleteTask(int keyTask) {
-        newTask.remove(keyTask);
+        taskMap.remove(keyTask);
         System.out.println("Задача № " + keyTask + "удалена.");
     }
 
     @Override
     public void deleteSubTask(int keySubTask) {
-        subTask.remove(keySubTask);
-        statusCheckEpic(subTask.get(keySubTask).getKey());
+        subTaskMap.remove(keySubTask);
+        statusCheckEpic(subTaskMap.get(keySubTask).getKey());
         System.out.println("Задача № " + keySubTask + "удалена.");
     }
 
     @Override
     public void updateEpic(Epic object, int keyEpic) {
-        if (newEpic.containsKey(keyEpic)) {
-            newEpic.put(keyEpic, object);
+        if (epicMap.containsKey(keyEpic)) {
+            epicMap.put(keyEpic, object);
         }
     }
 
     @Override
     public void updateTask(Epic object, int keyTask) {
-        if (newTask.containsKey(keyTask)) {
-            newTask.put(keyTask, object);
+        if (taskMap.containsKey(keyTask)) {
+            taskMap.put(keyTask, object);
 
         }
     }
 
     @Override
     public void updateSubTask(SubTask object, int keyEpic) {
-        if (subTask.containsKey(keyEpic)) {
-            subTask.put(keyEpic, object);
+        if (subTaskMap.containsKey(keyEpic)) {
+            subTaskMap.put(keyEpic, object);
             statusCheckEpic(keyEpic);
         }
     }
 
     @Override
     public void listTasks(int keyTask) {
-        for (Integer j : newEpic.keySet()) {
-            newEpic.get(j);
-            if (keyTask == subTask.get(j).getKey()) {
-                System.out.println(newEpic.get(j));
-                for (SubTask k : subTask.values()) {
+        for (Integer j : epicMap.keySet()) {
+            epicMap.get(j);
+            if (keyTask == subTaskMap.get(j).getKey()) {
+                System.out.println(epicMap.get(j));
+                for (SubTask k : subTaskMap.values()) {
                     if (j == k.getKey()) {
                         System.out.println(k);
                     }
@@ -163,7 +162,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void statusCheckEpic(int keyEpic) {
         boolean containsNewTasks = true;
         boolean containsDoneTasks = true;
-        Epic objectKeyEpic = newEpic.get(keyEpic);
+        Epic objectKeyEpic = epicMap.get(keyEpic);
 
         ArrayList<SubTask> listEpic = getEpicSubtasks(keyEpic);
 
@@ -191,9 +190,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<SubTask> getEpicSubtasks(int keyEpic) {
         ArrayList<SubTask> epicSubTask = new ArrayList<>();
-        for (Integer j : subTask.keySet()) {
-            if (keyEpic == subTask.get(j).getKey()) {
-                epicSubTask.add(subTask.get(j));
+        for (Integer j : subTaskMap.keySet()) {
+            if (keyEpic == subTaskMap.get(j).getKey()) {
+                epicSubTask.add(subTaskMap.get(j));
             }
         }
         return epicSubTask;

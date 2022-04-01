@@ -7,17 +7,20 @@ public class SubTask extends Task {
 
     protected int keyEpic;
 
-
     public SubTask(String name, String descriptionTask, StatusTask newStatusTask, int keyEpic) {
         super(name, descriptionTask, newStatusTask);
         this.keyEpic = keyEpic;
+    }
 
+    public SubTask(int taskId, String name, String description, StatusTask status, int keyEpic) {
+        super(taskId, name, description, status);
+        this.keyEpic = keyEpic;
     }
 
     @Override
     public String toString() {
         return "tasks.SubTask{" +
-                "id:" + idTask + '\'' +
+                "id:" + taskId + '\'' +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
@@ -36,7 +39,6 @@ public class SubTask extends Task {
 
     @Override
     public String toCSV() {
-        return getIdTask() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + ","
-                + getKey();
+        return super.toCSV() + "," + getKey();
     }
 }

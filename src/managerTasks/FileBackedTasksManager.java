@@ -5,20 +5,14 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-
     String taskFile;
-
 
     public FileBackedTasksManager(String newFile) {
         this.taskFile = newFile;
     }
-
 
     @Override
     public void newTask(Task object) {
@@ -49,7 +43,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         Task newTask = super.getTask(keyTask);
         save();
         return newTask;
-
     }
 
     @Override
@@ -103,25 +96,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     static Task taskFromString(String task) {
-
         String[] line = task.split(",");
         Task outTask = null;
 
-        if (line[1].equals("TASK")) {
-            Task newTask = new Task(line[2], line[4], StatusTask.valueOf(line[3]));
-            newTask.setId(Integer.parseInt(line[0]));
-
-            outTask = newTask;
+        if ("TASK".equals(line[1])) {
+            outTask = new Task(Integer.parseInt(line[0]), line[2], line[4], StatusTask.valueOf(line[3]));
         }
-        if (line[1].equals("EPIC")) {
-            Task newEpic = new Epic(line[2], line[4], StatusTask.valueOf(line[3]));
-            newEpic.setId(Integer.parseInt(line[0]));
-            outTask = newEpic;
+        if ("EPIC".equals(line[1])) {
+            outTask = new Epic(Integer.parseInt(line[0]), line[2], line[4], StatusTask.valueOf(line[3]));
         }
-        if (line[1].equals("SUBTASK")) {
-            Task newSubtask = new SubTask(line[2], line[4], StatusTask.valueOf(line[3]), Integer.parseInt(line[5]));
-            newSubtask.setId(Integer.parseInt(line[0]));
-            outTask = newSubtask;
+        if ("SUBTASK".equals(line[1])) {
+            outTask = new SubTask(Integer.parseInt(line[0]), line[2], line[4], StatusTask.valueOf(line[3]), Integer.parseInt(line[5]));
         }
         return outTask;
     }
@@ -134,39 +119,36 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             for (Task o : allTasks) {
                 tasksFile.write(o.toCSV() + '\n');
             }
-            tasksFile.write("\n" + historyTask(historyManager));
-
+            tasksFile.write("\n" + historyTask(historyManager.getHistory()));
         } catch (IOException exp) {
             throw new ManagerSaveException("Ошибка записи в файл");
         }
     }
 
-    static String historyTask(HistoryManager manager) {
-        List<Task> getHistory = manager.getHistory();
+    static String historyTask(List<Task> listHistory) {
         StringBuilder allHistory = new StringBuilder();
         int saveId;
-        String i;
-        for (Task o : getHistory) {
-            saveId = o.getIdTask();
-            i = Integer.toString(saveId);
-            allHistory.append(i).append(",");
+        String idHistoryTask;
+        for (Task history : listHistory) {
+            saveId = history.getTaskId();
+            idHistoryTask = Integer.toString(saveId);
+            allHistory.append(idHistoryTask).append(",");
         }
         return allHistory.toString();
     }
 
-    static List<Integer> fromHistoryTasks(String saveHistoryTasks) {
+    static List<Integer> getHistoryTasksList(String saveHistoryTasks) {
         List<Integer> reloadTaskHistory = new ArrayList<>();
         String[] reloadHistory = saveHistoryTasks.split(",");
-        for (String i : reloadHistory) {
-            int o = Integer.parseInt(i);
-            reloadTaskHistory.add(o);
+        for (String history : reloadHistory) {
+            int idHistory = Integer.parseInt(history);
+            reloadTaskHistory.add(idHistory);
         }
         return reloadTaskHistory;
     }
 
     static FileBackedTasksManager readFileOutBacked(File file) throws IOException {
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file.getPath());//получить путь
-
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file.getPath());
         FileReader reader = new FileReader(file);
         BufferedReader br = new BufferedReader(reader);
         String line;
@@ -174,23 +156,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         boolean emptyLine = false;
 
         while (br.ready()) {
-            line = (br.readLine());
+            line = (br.readLine());// hist
             if (!counter) {
                 counter = true;
                 continue;
             }
-            if (counter) {
-                if (!line.equals("")) {
-                    fileBackedTasksManager.addTaskFromFile(taskFromString(line));
-                }
-            }
             if (line.isEmpty()) {
                 emptyLine = true;
-                counter = false;
-            }
-            if (emptyLine) {
-                if (!line.equals("")) {
-                    fileBackedTasksManager.reloadHistory(fromHistoryTasks(line));
+            } else {
+                if (emptyLine) {
+                    fileBackedTasksManager.reloadHistory(getHistoryTasksList(line));
+                } else {
+                    fileBackedTasksManager.addTaskFromFile(taskFromString(line));
                 }
             }
         }
@@ -198,39 +175,39 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return fileBackedTasksManager;
     }
 
-
     private void addTaskFromFile(Task task) {
+        int idTask = task.getTaskId();
 
         if (task.getType() == TypeTask.TASK) {
-            newTask.put(task.getIdTask(), task);
-            if (task.getIdTask() > keyTask) {
-                keyTask = task.getIdTask();
-            }
+            taskMap.put(idTask, task);
+            setKeyTasks(idTask);
         }
         if (task.getType() == TypeTask.EPIC) {
-            newEpic.put(task.getIdTask(), (Epic) task);
-            if (task.getIdTask() > keyTask) {
-                keyTask = task.getIdTask();
-            }
+            epicMap.put(idTask, (Epic) task);
+            setKeyTasks(idTask);
         }
         if (task.getType() == TypeTask.SUBTASK) {
-            subTask.put(task.getIdTask(), (SubTask) task);
-            if (task.getIdTask() > keyTask) {
-                keyTask = task.getIdTask();
-            }
+            subTaskMap.put(idTask, (SubTask) task);
+            setKeyTasks(idTask);
+        }
+    }
+
+    private void setKeyTasks(int idTask) {
+        if (idTask > keyTask) {
+            keyTask = idTask;
         }
     }
 
     private void reloadHistory(List<Integer> idHistory) {
         for (Integer i : idHistory) {
-            if (newTask.containsKey(i)) {
-                historyManager.add(newTask.get(i));
+            if (taskMap.containsKey(i)) {
+                historyManager.add(taskMap.get(i));
             }
-            if (newEpic.containsKey(i)) {
-                historyManager.add(newEpic.get(i));
+            if (epicMap.containsKey(i)) {
+                historyManager.add(epicMap.get(i));
             }
-            if (subTask.containsKey(i)) {
-                historyManager.add(subTask.get(i));
+            if (subTaskMap.containsKey(i)) {
+                historyManager.add(subTaskMap.get(i));
             }
         }
     }
@@ -260,20 +237,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 StatusTask.IN_PROGRESS, 3);
         manager.newSubTask(taskSubTask3);
 
-
-        manager.getTask(1);
         manager.getTask(2);
+        manager.getSubTask(5);
         manager.getEpic(3);
+        manager.getTask(1);
         manager.getEpic(4);
-        manager.getEpic(5);
-        manager.getEpic(7);
+        manager.getSubTask(6);//
 
-        System.out.println("Проверка истории: " + manager.getHistory());
-        System.out.println(manager.getTask(1));
-        System.out.println("Проверка истории: " + manager.getHistory());
-        System.out.println(manager.getTask(2));
-
+        FileBackedTasksManager manager2 = readFileOutBacked(taskBacked);
+        System.out.println("Проверка истории менеджера 1: " + manager.getHistory());
         System.out.println(manager.listAllTasks());
-
+        System.out.println("Проверка истории менеджера 2: " + manager2.getHistory());
+        System.out.println(manager2.listAllTasks());
     }
 }
