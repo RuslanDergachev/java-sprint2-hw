@@ -1,4 +1,9 @@
-package managerTasks;
+package common;
+
+import historyTasks.HistoryManager;
+import historyTasks.InMemoryHistoryManager;
+import managerTasks.InMemoryTaskManager;
+import managerTasks.TaskManager;
 
 public class Managers  {
 

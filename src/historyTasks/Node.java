@@ -1,4 +1,4 @@
-package managerTasks;
+package historyTasks;
 
 public class Node <T> {
     private T data;

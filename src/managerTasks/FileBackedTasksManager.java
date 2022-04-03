@@ -1,8 +1,6 @@
 package managerTasks;
 
-import tasks.Epic;
-import tasks.SubTask;
-import tasks.Task;
+import tasks.*;
 
 import java.io.*;
 import java.util.*;
@@ -163,12 +161,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             if (line.isEmpty()) {
                 emptyLine = true;
+            } else if (emptyLine) {
+                fileBackedTasksManager.reloadHistory(getHistoryTasksList(line));
             } else {
-                if (emptyLine) {
-                    fileBackedTasksManager.reloadHistory(getHistoryTasksList(line));
-                } else {
-                    fileBackedTasksManager.addTaskFromFile(taskFromString(line));
-                }
+                fileBackedTasksManager.addTaskFromFile(taskFromString(line));
             }
         }
         br.close();
@@ -246,8 +242,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         FileBackedTasksManager manager2 = readFileOutBacked(taskBacked);
         System.out.println("Проверка истории менеджера 1: " + manager.getHistory());
-        System.out.println(manager.listAllTasks());
+        manager.listAllTasks();
         System.out.println("Проверка истории менеджера 2: " + manager2.getHistory());
         System.out.println(manager2.listAllTasks());
+
+        System.out.println("История просмотра задач:");
+        manager.printAllHistory(manager.getHistory());
+
+        System.out.println("Список задач:");
+        manager.printAllTasks(manager.listAllTasks());
     }
 }

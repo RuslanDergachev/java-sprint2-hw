@@ -1,14 +1,16 @@
-package managerTasks;
+package historyTasks;
 import java.util.*;
 import tasks.Task;
 
-interface HistoryManager {
+public interface HistoryManager {
 
     void add(Task task);
 
     void remove(int id);
 
     List<Task> getHistory();
+
+    void printAllHistory(List<Task> history);
 
 
 

@@ -1,8 +1,5 @@
 package tasks;
 
-import managerTasks.StatusTask;
-import managerTasks.TypeTask;
-
 public class SubTask extends Task {
 
     protected int keyEpic;

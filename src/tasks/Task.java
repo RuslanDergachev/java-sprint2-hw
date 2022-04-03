@@ -1,8 +1,5 @@
 package tasks;
 
-import managerTasks.StatusTask;
-import managerTasks.TypeTask;
-
 public class Task {
     int taskId;
     protected String name;

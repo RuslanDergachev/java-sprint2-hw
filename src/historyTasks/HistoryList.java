@@ -1,9 +1,10 @@
-package managerTasks;
+package historyTasks;
 
 import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HistoryList<T extends Task> {
@@ -61,6 +62,12 @@ public class HistoryList<T extends Task> {
             nextNode.setPrev(prevNode);
         } else {
             tail = prevNode;
+        }
+    }
+
+    public void printHistory(List<Task> listAllHistory){
+        for (Task history: listAllHistory){
+            System.out.println(history);
         }
     }
 }

@@ -1,4 +1,4 @@
-package managerTasks;
+package historyTasks;
 
 import tasks.Task;
 
@@ -23,5 +23,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         return historyList.getTasks();
     }
 
-
+    @Override
+    public void printAllHistory(List<Task> history){
+       historyList.printHistory(getHistory());
+    }
 }

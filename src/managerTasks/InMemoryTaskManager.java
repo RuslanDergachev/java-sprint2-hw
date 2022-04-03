@@ -1,6 +1,9 @@
 package managerTasks;
 
+import common.Managers;
+import historyTasks.HistoryManager;
 import tasks.Epic;
+import tasks.StatusTask;
 import tasks.SubTask;
 import tasks.Task;
 
@@ -206,5 +209,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void remove(int id){
         historyManager.remove(id);
+    }
+    @Override
+    public void printAllHistory(List<Task> history){
+        historyManager.printAllHistory(getHistory());
+    }
+    @Override
+    public void printAllTasks(List<Task> tasks){
+        for (Task task: tasks){
+            System.out.println(task);
+        }
     }
 }

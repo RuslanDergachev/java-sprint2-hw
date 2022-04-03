@@ -7,7 +7,7 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-interface TaskManager {
+public interface TaskManager {
 
 
     int getId();
@@ -49,5 +49,9 @@ interface TaskManager {
     List<Task> getHistory();
 
     void remove(int id);
+
+    void printAllHistory(List<Task> history);
+
+    void printAllTasks(List<Task> tasks);
 
 }

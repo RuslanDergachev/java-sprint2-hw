@@ -1,6 +1,8 @@
-package managerTasks;
+package common;
 
+import managerTasks.TaskManager;
 import tasks.Epic;
+import tasks.StatusTask;
 import tasks.SubTask;
 import tasks.Task;
 
@@ -48,15 +50,14 @@ public class Main {
         System.out.println(taskManager.getSubTask(6));
         System.out.println("Проверка истории: " +taskManager.getHistory());
         System.out.println(taskManager.getSubTask(5));
-        System.out.println("Проверка истории: " +taskManager.getHistory());
+        System.out.println("Проверка истории: " +taskManager.getHistory() +'\n');
 
-        taskManager.remove(3);
-        taskManager.remove(2);
-        taskManager.remove(5);
-        taskManager.remove(6);
+//        taskManager.remove(3);
+//        taskManager.remove(2);
+//        taskManager.remove(5);
+//        taskManager.remove(6);
 
-        System.out.println("Проверка истории: " +taskManager.getHistory());
-
-
+        System.out.println("История просмотра задач:");
+        taskManager.printAllHistory(taskManager.getHistory());
     }
 }
