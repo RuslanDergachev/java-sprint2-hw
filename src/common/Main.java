@@ -6,15 +6,21 @@ import tasks.StatusTask;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class Main {
     public static void main(String[] args) {
 
         TaskManager taskManager = Managers.getDefault();
 
-        Task taskTask = new Task("Пойти гулять", "Сегодня хорошая погода", StatusTask.NEW);
+        Task taskTask = new Task("Пойти гулять", "Сегодня хорошая погода"
+                , StatusTask.NEW, Duration.ofMinutes(90), LocalDateTime.of(2022,05,01, 0, 0));
         taskManager.newTask(taskTask);
 
-        Task taskTask2 = new Task("Побыть дома", "Сегодня дождь", StatusTask.NEW);
+        Task taskTask2 = new Task("Побыть дома", "Сегодня дождь", StatusTask.NEW
+                , Duration.ofMinutes(90), LocalDateTime.of(2022,05,01, 0 ,0));
         taskManager.newTask(taskTask2);
 
         Epic taskEpic7 = new Epic("Пойти побегать", "Стадион рядом", StatusTask.NEW);
@@ -25,11 +31,11 @@ public class Main {
         taskManager.newEpic(taskEpic5);
 
         SubTask taskSubTask = new SubTask("Взять сумку", "Сумку взять маленькую",
-                StatusTask.DONE, 3);
+                StatusTask.DONE, 3, Duration.ofMinutes(90), LocalDateTime.of(2022,05,01, 0, 0));
         taskManager.newSubTask(taskSubTask);
 
         SubTask taskSubTask3 = new SubTask("Взять перчатки", "Одеть шарфик",
-                StatusTask.IN_PROGRESS, 3);
+                StatusTask.IN_PROGRESS, 3, Duration.ofMinutes(90), LocalDateTime.of(2022,05,01, 0, 0));
         taskManager.newSubTask(taskSubTask3);
 
 
@@ -51,11 +57,6 @@ public class Main {
         System.out.println("Проверка истории: " +taskManager.getHistory());
         System.out.println(taskManager.getSubTask(5));
         System.out.println("Проверка истории: " +taskManager.getHistory() +'\n');
-
-//        taskManager.remove(3);
-//        taskManager.remove(2);
-//        taskManager.remove(5);
-//        taskManager.remove(6);
 
         System.out.println("История просмотра задач:");
         taskManager.printAllHistory(taskManager.getHistory());

@@ -7,13 +7,15 @@ import tasks.StatusTask;
 import tasks.SubTask;
 import tasks.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    protected List<Task> prioritizedTasks;
 
     public void setKeyTask(int keyTask) {
         this.keyTask = keyTask;
@@ -32,9 +34,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void newTask(Task object) {
-        int idTask = getId();
-        taskMap.put(idTask, object);
-        object.setId(idTask);
+        if(timeCrossingTasks(object)) {
+            int idTask = getId();
+            taskMap.put(idTask, object);
+            object.setId(idTask);
+        }
     }
 
     @Override
@@ -46,10 +50,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void newSubTask(SubTask object) {
-        int idSubTask = getId();
-        subTaskMap.put(idSubTask, object);
-        statusCheckEpic(object.getKey());
-        object.setId(idSubTask);
+        if(timeCrossingTasks(object)) {
+            int idSubTask = getId();
+            subTaskMap.put(idSubTask, object);
+            statusCheckEpic(object.getKey());
+            object.setId(idSubTask);
+        }
     }
 
     @Override
@@ -81,8 +87,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getEpic(int keyEpic) {
-        Task resultFound = null;
+    public Epic getEpic(int keyEpic) {
+        Epic resultFound = null;
         for (Integer o : epicMap.keySet()) {
             if (keyEpic == o) {
                 resultFound = epicMap.get(o);
@@ -93,8 +99,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getSubTask(int keySubTask) {
-        Task resultFound = null;
+    public SubTask getSubTask(int keySubTask) {
+        SubTask resultFound = null;
         for (Integer o : subTaskMap.keySet()) {
             if (keySubTask == o) {
                 resultFound = subTaskMap.get(o);
@@ -118,8 +124,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubTask(int keySubTask) {
+        int keyEpic = subTaskMap.get(keySubTask).getKey();
         subTaskMap.remove(keySubTask);
-        statusCheckEpic(subTaskMap.get(keySubTask).getKey());
+        statusCheckEpic(keyEpic);
         System.out.println("Задача № " + keySubTask + "удалена.");
     }
 
@@ -131,18 +138,22 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Epic object, int keyTask) {
-        if (taskMap.containsKey(keyTask)) {
-            taskMap.put(keyTask, object);
-
+    public void updateTask(Task object, int keyTask) {
+        if(timeCrossingTasks(object)) {
+            if (taskMap.containsKey(keyTask)) {
+                taskMap.put(keyTask, object);
+                getPrioritizedTasks(listTasksAndSubTasks());
+            }
         }
     }
 
     @Override
-    public void updateSubTask(SubTask object, int keyEpic) {
-        if (subTaskMap.containsKey(keyEpic)) {
-            subTaskMap.put(keyEpic, object);
-            statusCheckEpic(keyEpic);
+    public void updateSubTask(SubTask object, int idSubTask) {
+        if(timeCrossingTasks(object)) {
+            if (subTaskMap.containsKey(idSubTask)) {
+                subTaskMap.put(idSubTask, object);
+                statusCheckEpic(object.getKey());
+            }
         }
     }
 
@@ -166,11 +177,12 @@ public class InMemoryTaskManager implements TaskManager {
         boolean containsNewTasks = true;
         boolean containsDoneTasks = true;
         Epic objectKeyEpic = epicMap.get(keyEpic);
-
         ArrayList<SubTask> listEpic = getEpicSubtasks(keyEpic);
+        objectKeyEpic.setDuration(returnDurationSubtaskForEpic(listEpic));
+        objectKeyEpic.setStartTime(returnStartTime(listEpic));
+        objectKeyEpic.setEndTime(getEndTime(returnDurationSubtaskForEpic(listEpic), returnStartTime(listEpic)));
 
         for (Task o : listEpic) {
-
             if (!o.getStatus().equals(StatusTask.NEW)) {
                 containsNewTasks = false;
             }
@@ -178,7 +190,6 @@ public class InMemoryTaskManager implements TaskManager {
                 containsDoneTasks = false;
             }
         }
-
         if (containsNewTasks || listEpic.isEmpty()) {
             objectKeyEpic.setStatus(StatusTask.NEW);
             return;
@@ -207,17 +218,92 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void remove(int id){
+    public void remove(int id) {
         historyManager.remove(id);
     }
+
     @Override
-    public void printAllHistory(List<Task> history){
+    public void printAllHistory(List<Task> history) {
         historyManager.printAllHistory(getHistory());
     }
+
     @Override
-    public void printAllTasks(List<Task> tasks){
-        for (Task task: tasks){
+    public void printAllTasks(List<Task> tasks) {
+        for (Task task : tasks) {
             System.out.println(task);
         }
+    }
+
+    public LocalDateTime getEndTime(Duration duration, LocalDateTime startTime) {
+        if (startTime == null) {
+            return null;
+        }
+        return startTime.plus(duration);
+    }
+
+    public Duration returnDurationSubtaskForEpic(ArrayList<SubTask> listEpic) {
+        Duration allDuration = null;
+        for (SubTask subTask : listEpic) {
+            if (allDuration == null) {
+                allDuration = subTask.getDuration();
+                continue;
+            }
+            allDuration = allDuration.plus(subTask.getDuration());
+        }
+        return allDuration;
+    }
+
+    public LocalDateTime returnStartTime(ArrayList<SubTask> listEpic) {
+        LocalDateTime allSubTaskStartTime = null;
+        for (SubTask subTask : listEpic) {
+            if (allSubTaskStartTime == null) {
+                allSubTaskStartTime = subTask.getStartTime();
+            }
+            if (allSubTaskStartTime != null && allSubTaskStartTime.isAfter(subTask.getStartTime())) {
+                allSubTaskStartTime = subTask.getStartTime();
+            }
+        }
+        return allSubTaskStartTime;
+    }
+
+    Comparator<Task> comparator = new Comparator<Task>() {
+        @Override
+        public int compare(Task o1, Task o2) {
+            if (o1.getId() == o2.getId()) return 0;
+            if (o1.getStartTime() == null && o2.getStartTime() == null) {
+                if (o1.getId() > o2.getId()) return -1;
+            } else if (o1.getStartTime() != null && o2.getStartTime() != null) {
+                return o1.getStartTime().compareTo(o2.getStartTime());
+            }
+            return 1;
+        }
+    };
+
+    public List<Task> getPrioritizedTasks(List<Task> tasks) {
+        Set<Task> prioritizedTasks = new TreeSet<>(comparator.reversed());
+        prioritizedTasks.addAll(tasks);
+        return new ArrayList<>(prioritizedTasks);
+    }
+
+    public List<Task> listTasksAndSubTasks() {
+        List<Task> tasksAndSubTasks = new ArrayList<>(taskMap.values());
+        tasksAndSubTasks.addAll(subTaskMap.values());
+        return tasksAndSubTasks;
+    }
+
+    public Boolean timeCrossingTasks(Task task) {
+        prioritizedTasks  = getPrioritizedTasks(listTasksAndSubTasks());
+        boolean timeCross = true;
+        if (task != null && task.getStartTime()!=null) {
+            for (Task newTask : prioritizedTasks) {
+                if (task.getStartTime().isBefore(newTask.getEndTime()) &&
+                        task.getEndTime().isAfter(newTask.getStartTime())) {
+                    timeCross = false;
+                    System.out.println("Время выполнения задачи с " + newTask.getStartTime() + " до " +
+                            newTask.getEndTime() + " занято. Выберите другое время выполнения задачи");
+                }
+            }
+        }
+        return timeCross;
     }
 }

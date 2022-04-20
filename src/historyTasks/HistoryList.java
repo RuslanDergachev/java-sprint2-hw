@@ -14,7 +14,7 @@ public class HistoryList<T extends Task> {
     private Map<Integer, Node<T>> historyView = new HashMap<>();
 
     public void addLast(T element) {
-        int id = element.getTaskId();
+        int id = element.getId();
         remove(id);
 
         final Node<T> newNode = new Node<>(element);

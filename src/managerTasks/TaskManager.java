@@ -4,11 +4,13 @@ import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
-
 
     int getId();
 
@@ -24,9 +26,9 @@ public interface TaskManager {
 
     Task getTask(int keyTask);
 
-    Task getEpic(int keyEpic);
+    Epic getEpic(int keyEpic);
 
-    Task getSubTask(int keySubTask);
+    SubTask getSubTask(int keySubTask);
 
     void deleteEpic(int keyEpic);
 
@@ -36,15 +38,15 @@ public interface TaskManager {
 
     void updateEpic(Epic object, int keyEpic);
 
-    void updateTask(Epic object, int keyTask);
+    void updateTask(Task object, int keyTask);
 
     void updateSubTask(SubTask object, int keyEpic);
-
-    void listTasks(int keyTask);
 
     void statusCheckEpic(int keyEpic);
 
     ArrayList<SubTask> getEpicSubtasks(int keyEpic);
+
+    void listTasks(int keyTask);
 
     List<Task> getHistory();
 
@@ -53,5 +55,11 @@ public interface TaskManager {
     void printAllHistory(List<Task> history);
 
     void printAllTasks(List<Task> tasks);
+
+    public List<Task> getPrioritizedTasks(List<Task> tasks);
+
+    public List<Task> listTasksAndSubTasks();
+
+    Boolean timeCrossingTasks(Task task);
 
 }
