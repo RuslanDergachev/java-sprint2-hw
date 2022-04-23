@@ -1,10 +1,15 @@
-package tasks;
+package test;
 
+import historyTasks.InMemoryHistoryManager;
 import managerTasks.InMemoryTaskManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
+import tasks.StatusTask;
+import tasks.SubTask;
+import tasks.Task;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -12,12 +17,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
 
-    @Test //проверка на пустой список подзадач
-    public void returnEmptyListSubTask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
+    private InMemoryTaskManager taskManager;
+    private Epic epic;
+
+    @BeforeEach
+    public void setUp() {
+        taskManager = new InMemoryTaskManager();
+        epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
                 StatusTask.NEW);
         taskManager.newEpic(epic);
+    }
+
+    @Test //проверка на пустой список подзадач
+    public void returnEmptyListSubTask() {
         final int epicId = epic.getId();
         final Epic savedEpic = taskManager.getEpic(epicId);
         assertNotNull(savedEpic, "EPIC не найден.");
@@ -29,10 +41,6 @@ class EpicTest {
 
     @Test //проверка на все подзадачи со статусом NEW
     public void returnStatusNewForALlSubtasksNew(){
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
-                StatusTask.NEW);
-        taskManager.newEpic(epic);
         final int epicId = epic.getId();
         final Task savedEpic = taskManager.getEpic(epicId);
 
@@ -48,10 +56,6 @@ class EpicTest {
 
     @Test //проверка на все подзадачи со статусом DONE
     public void returnStatusDoneForALlSubtasksDone(){
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
-                StatusTask.NEW);
-        taskManager.newEpic(epic);
         final int epicId = epic.getId();
         final Task savedEpic = taskManager.getEpic(epicId);
 
@@ -68,10 +72,6 @@ class EpicTest {
 
     @Test //Проверка на изменение статуса Эпика на IN_PROGRESS, если статусы подзадач разные
     public void returnStatusNewForSubtasksDoneAndNew(){
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
-                StatusTask.NEW);
-        taskManager.newEpic(epic);
         final int epicId = epic.getId();
         SubTask subTask1 = new SubTask("TestAddNewSubTask", "TestAddNewSubTask description",
                 StatusTask.DONE, epicId, Duration.ofMinutes(90), LocalDateTime.of(2022,05,01,0,0));
@@ -86,10 +86,6 @@ class EpicTest {
 
     @Test //Проверка статуса эпика. Должен быть IN_PROGRESS, если у подзадач IN_PROGRESS
     public void returnStatusInProgressForSubtasksInProgress(){
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
-                StatusTask.NEW);
-        taskManager.newEpic(epic);
         final int epicId = epic.getId();
         final Task savedEpic = taskManager.getEpic(epicId);
 
@@ -105,10 +101,6 @@ class EpicTest {
     }
     @Test //Проверка расчета полей Duration и StartTime, endTime
     public void returnStartTimeAndDurationAndEndTimeForEpic(){
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
-                StatusTask.NEW);
-        taskManager.newEpic(epic);
         final int epicId = epic.getId();
         final Task saveEpic = taskManager.getEpic(epicId);
         assertNull(saveEpic.getDuration(), "DURATION должен отсутствовать");
@@ -128,10 +120,6 @@ class EpicTest {
     }
     @Test//Проверка сеттеров для StartTime, Duration, EndTime
     public void returnSetStartTimeAndDurationAndEndTimeForEpic(){
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("TestAddNewEpic", "TestAddNewEpic description",
-                StatusTask.NEW);
-        taskManager.newEpic(epic);
         final int epicId = epic.getId();
         epic.setDuration(Duration.ofMinutes(90));
         final Task saveEpic = taskManager.getEpic(epicId);

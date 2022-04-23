@@ -1,5 +1,6 @@
-package managerTasks;
+package test;
 
+import managerTasks.TaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.StatusTask;
@@ -7,7 +8,6 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +19,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     T taskManager;
 
     protected int getEpicId(Epic epic) {
-        final int epicId = epic.getId();
-        return epicId;
+        return epic.getId();
+
     }
 
     abstract T createManager();
-
-    SubTask createSubTask(StatusTask status, int keyEpic) {
-        return new SubTask("Взять перчатки", "Одеть шарфик", status, keyEpic,
-                Duration.ofMinutes(90), LocalDateTime.of(2022, 05, 07, 0, 0));
-    }
 
     @Test// проверка создания Task
     public void createTask() {
@@ -36,12 +31,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 StatusTask.NEW, Duration.ofMinutes(90),
                 LocalDateTime.of(2022, 05, 01, 0, 0));
         taskManager.newTask(task1);
-        final int taskId = task1.getId();
-        final Task savedTask = taskManager.getTask(taskId);
+        final Task savedTask = taskManager.getTask(task1.getId());
         assertNotNull(savedTask, "Задача не найдена");
         assertEquals(task1, savedTask, "Задачи не совпадают");
         final List<Task> tasks = taskManager.listAllTasks();
-        assertNotNull(tasks, "Задачи не возвращаются");
+        assertEquals(1, tasks.size(), "Задача не создана");
     }
 
     @Test// проверка создания Epic
@@ -273,8 +267,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.newSubTask(subtask2);
         assertEquals(4, taskManager.getPrioritizedTasks(taskManager.listTasksAndSubTasks()).size(),
                 "Количество задач в списке не совпадает");
-        assertNotNull(taskManager.getPrioritizedTasks(taskManager.listTasksAndSubTasks()).size(),
-                "Список задач не должен быть пустым");
         assertEquals(task2, taskManager.getPrioritizedTasks(taskManager.listTasksAndSubTasks()).get(0),
                 "Задачи не совпадают");
     }

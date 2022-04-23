@@ -4,10 +4,9 @@ import tasks.*;
 
 import java.io.*;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     String taskFile;
@@ -101,17 +100,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     static Task taskFromString(String task) {
         String[] line = task.split(",");
         Task outTask = null;
+        LocalDateTime returnStartTime;
+
+        if(line.length < 6 || line[6].equals("null")){
+            returnStartTime = null;
+        } else {
+            returnStartTime = LocalDateTime.parse(line[6]);
+        }
 
         if ("TASK".equals(line[1])) {
             outTask = new Task(Integer.parseInt(line[0]), line[2], line[4], StatusTask.valueOf(line[3])
-                    , Duration.parse(line[5]), LocalDateTime.parse(line[6]));
+                    , Duration.parse(line[5]), returnStartTime);
         }
         if ("EPIC".equals(line[1])) {
             outTask = new Epic(Integer.parseInt(line[0]), line[2], line[4], StatusTask.valueOf(line[3]));
         }
         if ("SUBTASK".equals(line[1])) {
             outTask = new SubTask(Integer.parseInt(line[0]), line[2], line[4], StatusTask.valueOf(line[3]),
-                     Duration.parse(line[5]), LocalDateTime.parse(line[6]), Integer.parseInt(line[7]));
+                     Duration.parse(line[5]), returnStartTime, Integer.parseInt(line[7]));
         }
         return outTask;
     }
@@ -220,7 +226,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         FileBackedTasksManager manager = readFileOutBacked(taskBacked);
 
         Task taskTask = new Task("Пойти гулять", "Сегодня хорошая погода"
-                , StatusTask.NEW, Duration.ofMinutes(90), LocalDateTime.of(2022,05,01, 10, 0));
+                , StatusTask.NEW, Duration.ofMinutes(90), null);
         manager.newTask(taskTask);
 
         Task taskTask2 = new Task("Побыть дома", "Сегодня дождь", StatusTask.NEW

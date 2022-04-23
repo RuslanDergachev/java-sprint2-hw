@@ -294,14 +294,15 @@ public class InMemoryTaskManager implements TaskManager {
     public Boolean timeCrossingTasks(Task task) {
         prioritizedTasks  = getPrioritizedTasks(listTasksAndSubTasks());
         boolean timeCross = true;
-        if (task != null && task.getStartTime()!=null) {
+        if (task != null) {
             for (Task newTask : prioritizedTasks) {
-                if (task.getStartTime().isBefore(newTask.getEndTime()) &&
+                if (task.getStartTime()!=null && task.getStartTime().isBefore(newTask.getEndTime()) &&
                         task.getEndTime().isAfter(newTask.getStartTime())) {
                     timeCross = false;
                     System.out.println("Время выполнения задачи с " + newTask.getStartTime() + " до " +
                             newTask.getEndTime() + " занято. Выберите другое время выполнения задачи");
                 }
+                return timeCross;
             }
         }
         return timeCross;

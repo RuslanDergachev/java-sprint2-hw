@@ -1,18 +1,9 @@
-package managerTasks;
+package test;
 
-import org.junit.jupiter.api.BeforeEach;
+import managerTasks.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.StatusTask;
-import tasks.SubTask;
-import tasks.Task;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
 
