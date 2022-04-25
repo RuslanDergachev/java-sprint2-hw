@@ -8,13 +8,11 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
     protected List<Task> prioritizedTasks;
 
     public void setKeyTask(int keyTask) {
@@ -34,7 +32,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void newTask(Task object) {
-        if(timeCrossingTasks(object)) {
+        if(isTaskCrossedInTime(object)) {
             int idTask = getId();
             taskMap.put(idTask, object);
             object.setId(idTask);
@@ -50,7 +48,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void newSubTask(SubTask object) {
-        if(timeCrossingTasks(object)) {
+        if(isTaskCrossedInTime(object)) {
             int idSubTask = getId();
             subTaskMap.put(idSubTask, object);
             statusCheckEpic(object.getKey());
@@ -139,7 +137,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task object, int keyTask) {
-        if(timeCrossingTasks(object)) {
+        if(isTaskCrossedInTime(object)) {
             if (taskMap.containsKey(keyTask)) {
                 taskMap.put(keyTask, object);
                 getPrioritizedTasks(listTasksAndSubTasks());
@@ -149,7 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask object, int idSubTask) {
-        if(timeCrossingTasks(object)) {
+        if(isTaskCrossedInTime(object)) {
             if (subTaskMap.containsKey(idSubTask)) {
                 subTaskMap.put(idSubTask, object);
                 statusCheckEpic(object.getKey());
@@ -244,11 +242,12 @@ public class InMemoryTaskManager implements TaskManager {
     public Duration returnDurationSubtaskForEpic(ArrayList<SubTask> listEpic) {
         Duration allDuration = null;
         for (SubTask subTask : listEpic) {
+            Duration subTaskDuration = subTask.getDuration();
             if (allDuration == null) {
-                allDuration = subTask.getDuration();
+                allDuration = subTaskDuration;
                 continue;
             }
-            allDuration = allDuration.plus(subTask.getDuration());
+            allDuration = allDuration.plus(subTaskDuration);
         }
         return allDuration;
     }
@@ -256,11 +255,11 @@ public class InMemoryTaskManager implements TaskManager {
     public LocalDateTime returnStartTime(ArrayList<SubTask> listEpic) {
         LocalDateTime allSubTaskStartTime = null;
         for (SubTask subTask : listEpic) {
+            LocalDateTime subTaskTime = subTask.getStartTime();
             if (allSubTaskStartTime == null) {
-                allSubTaskStartTime = subTask.getStartTime();
-            }
-            if (allSubTaskStartTime != null && allSubTaskStartTime.isAfter(subTask.getStartTime())) {
-                allSubTaskStartTime = subTask.getStartTime();
+                allSubTaskStartTime = subTaskTime;
+            } else if (allSubTaskStartTime.isAfter(subTaskTime)) {
+                allSubTaskStartTime = subTaskTime;
             }
         }
         return allSubTaskStartTime;
@@ -291,16 +290,16 @@ public class InMemoryTaskManager implements TaskManager {
         return tasksAndSubTasks;
     }
 
-    public Boolean timeCrossingTasks(Task task) {
+    public Boolean isTaskCrossedInTime(Task task) {
         prioritizedTasks  = getPrioritizedTasks(listTasksAndSubTasks());
         boolean timeCross = true;
         if (task != null) {
-            for (Task newTask : prioritizedTasks) {
-                if (task.getStartTime()!=null && task.getStartTime().isBefore(newTask.getEndTime()) &&
-                        task.getEndTime().isAfter(newTask.getStartTime())) {
+            for (Task addedTask : prioritizedTasks) {
+                if (task.getStartTime()!=null && task.getStartTime().isBefore(addedTask.getEndTime()) &&
+                        task.getEndTime().isAfter(addedTask.getStartTime())) {
                     timeCross = false;
-                    System.out.println("Время выполнения задачи с " + newTask.getStartTime() + " до " +
-                            newTask.getEndTime() + " занято. Выберите другое время выполнения задачи");
+                    System.out.println("Время выполнения задачи id № "+ task.getId() +" с " + addedTask.getStartTime() + " до " +
+                            addedTask.getEndTime() + " занято. Выберите другое время выполнения задачи");
                 }
                 return timeCross;
             }

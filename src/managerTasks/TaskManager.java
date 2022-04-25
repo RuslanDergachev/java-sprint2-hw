@@ -57,6 +57,6 @@ public interface TaskManager {
 
     public List<Task> listTasksAndSubTasks();
 
-    Boolean timeCrossingTasks(Task task);
+    Boolean isTaskCrossedInTime(Task task);
 
 }

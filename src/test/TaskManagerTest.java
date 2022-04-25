@@ -315,9 +315,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 LocalDateTime.of(2022, 05, 10, 10, 0));
         taskManager.newEpic(epic1);
         taskManager.newTask(task1);
-        assertTrue(taskManager.timeCrossingTasks(task2), "Должно вернуться true");
+        assertTrue(taskManager.isTaskCrossedInTime(task2), "Должно вернуться true");
         taskManager.newTask(subtask1);
-        assertEquals(false, taskManager.timeCrossingTasks(subtask2),
+        assertEquals(false, taskManager.isTaskCrossedInTime(subtask2),
                 "Пересечения времени не должно быть");
     }
 }
