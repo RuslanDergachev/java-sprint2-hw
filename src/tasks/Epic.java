@@ -2,6 +2,7 @@ package tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Epic extends Task {
 
@@ -60,5 +61,19 @@ public class Epic extends Task {
     @Override
     public String toCSV() {
         return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(endTime, epic.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), endTime);
     }
 }

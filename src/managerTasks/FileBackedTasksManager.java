@@ -1,5 +1,6 @@
 package managerTasks;
 
+import http.KVTaskClient;
 import tasks.*;
 
 import java.io.*;
@@ -20,6 +21,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void newTask(Task object) {
         super.newTask(object);
         save();
+
+
     }
 
     @Override
@@ -97,7 +100,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    static Task taskFromString(String task) {
+    protected static Task taskFromString(String task) {
         String[] line = task.split(",");
         Task outTask = null;
         LocalDateTime returnStartTime;
@@ -122,7 +125,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return outTask;
     }
 
-    private void save() {
+    protected void save() {
         try (Writer tasksFile = new FileWriter(taskFile)) {
             tasksFile.write("id,type,status,description,duration,startTime,epic\n");
             List<Task> allTasks = listAllTasks();
@@ -136,7 +139,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    static String historyTask(List<Task> listHistory) {
+    protected String historyTask(List<Task> listHistory) {
         StringBuilder allHistory = new StringBuilder();
         int saveId;
         String idHistoryTask;
@@ -148,7 +151,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return allHistory.toString();
     }
 
-    static List<Integer> getHistoryTasksList(String saveHistoryTasks) {
+    protected static List<Integer> getHistoryTasksList(String saveHistoryTasks) {
         List<Integer> reloadTaskHistory = new ArrayList<>();
         String[] reloadHistory = saveHistoryTasks.split(",");
         for (String history : reloadHistory) {
@@ -158,7 +161,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return reloadTaskHistory;
     }
 
-    static FileBackedTasksManager readFileOutBacked(File file) throws IOException {
+    protected static FileBackedTasksManager readFileOutBacked(File file) throws IOException {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file.getPath());
         FileReader reader = new FileReader(file);
         BufferedReader br = new BufferedReader(reader);
@@ -184,7 +187,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return fileBackedTasksManager;
     }
 
-    private void addTaskFromFile(Task task) {
+    protected void addTaskFromFile(Task task) {
         int idTask = task.getId();
 
         if (task.getType() == TypeTask.TASK) {
@@ -201,13 +204,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private void setKeyTasks(int idTask) {
+    protected void setKeyTasks(int idTask) {
         if (idTask > keyTask) {
             keyTask = idTask;
         }
     }
 
-    private void reloadHistory(List<Integer> idHistory) {
+    protected void reloadHistory(List<Integer> idHistory) {
         for (Integer i : idHistory) {
             if (taskMap.containsKey(i)) {
                 historyManager.add(taskMap.get(i));

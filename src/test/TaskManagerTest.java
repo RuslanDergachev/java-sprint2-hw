@@ -20,7 +20,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     protected int getEpicId(Epic epic) {
         return epic.getId();
-
     }
 
     abstract T createManager();

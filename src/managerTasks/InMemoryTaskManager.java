@@ -241,8 +241,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Duration returnDurationSubtaskForEpic(ArrayList<SubTask> listEpic) {
         Duration allDuration = null;
+        Duration subTaskDuration;
         for (SubTask subTask : listEpic) {
-            Duration subTaskDuration = subTask.getDuration();
+            subTaskDuration = subTask.getDuration();
             if (allDuration == null) {
                 allDuration = subTaskDuration;
                 continue;
@@ -254,8 +255,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     public LocalDateTime returnStartTime(ArrayList<SubTask> listEpic) {
         LocalDateTime allSubTaskStartTime = null;
+        LocalDateTime subTaskTime;
         for (SubTask subTask : listEpic) {
-            LocalDateTime subTaskTime = subTask.getStartTime();
+            subTaskTime = subTask.getStartTime();
             if (allSubTaskStartTime == null) {
                 allSubTaskStartTime = subTaskTime;
             } else if (allSubTaskStartTime.isAfter(subTaskTime)) {

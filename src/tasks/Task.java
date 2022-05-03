@@ -2,6 +2,7 @@ package tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task {
     int taskId;
@@ -57,8 +58,20 @@ public class Task {
         return TypeTask.TASK;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setStatus(StatusTask status) {
+        this.status = status;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getDescription() {
@@ -88,5 +101,18 @@ public class Task {
     public String toCSV() {
         return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + ","
                 + getDuration() + "," + getStartTime();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return taskId == task.taskId && name.equals(task.name) && description.equals(task.description) && status == task.status && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId, name, description, status, duration, startTime);
     }
 }
